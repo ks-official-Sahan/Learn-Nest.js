@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model book {
+  id                           Int      @id @default(autoincrement())
+  name                         String
+  categoryId                   String
+  favoriteById                 String?
+  userId                       String
+  category                     category @relation(fields: [categoryId], references: [id])
+  user_book_favoriteByIdTouser user?    @relation("book_favoriteByIdTouser", fields: [favoriteById], references: [id])
+  user_book_userIdTouser       user     @relation("book_userIdTouser", fields: [userId], references: [id])
+
+  @@index([categoryId], map: "book_categoryId_fkey")
+  @@index([favoriteById], map: "book_favoriteById_fkey")
+  @@index([userId], map: "book_userId_fkey")
+}
+
+model category {
+  id   String @id
+  name String @unique
+  book book[]
+}
+
+model my_user {
+  user_id    Int     @id @default(autoincrement())
+  first_name String?
+  last_name  String  @unique
+}
+
+model user {
+  id                           String          @id
+  username                     String          @unique
+  password                     String
+  age                          Int
+  createdAt                    DateTime?       @default(now())
+  name                         String
+  role                         user_role       @default(BASIC)
+  userPreferenceId             String?         @unique
+  updatedAt                    DateTime?       @default(now())
+  book_book_favoriteByIdTouser book[]          @relation("book_favoriteByIdTouser")
+  book_book_userIdTouser       book[]          @relation("book_userIdTouser")
+  userpreference               userpreference? @relation(fields: [userPreferenceId], references: [id])
+}
+
+model userpreference {
+  id           String  @id
+  emailUpdates Boolean
+  user         user?
+}
+
+enum user_role {
+  BASIC
+  ADMIN
+  USER
+}

@@ -11,8 +11,8 @@ model book {
   id                           Int      @id @default(autoincrement())
   name                         String
   categoryId                   String
-  favoriteById                 String?
-  userId                       String
+  favoriteById                 Int?
+  userId                       Int
   category                     category @relation(fields: [categoryId], references: [id])
   user_book_favoriteByIdTouser user?    @relation("book_favoriteByIdTouser", fields: [favoriteById], references: [id])
   user_book_userIdTouser       user     @relation("book_userIdTouser", fields: [userId], references: [id])
@@ -35,7 +35,7 @@ model my_user {
 }
 
 model user {
-  id                           String          @id @default(uuid())
+  id                           Int          @id @default(autoincrement())
   username                     String          @unique
   password                     String
   age                          Int

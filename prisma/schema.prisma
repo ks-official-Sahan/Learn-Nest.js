@@ -35,7 +35,7 @@ model my_user {
 }
 
 model user {
-  id                           String          @id
+  id                           String          @id @default(uuid())
   username                     String          @unique
   password                     String
   age                          Int

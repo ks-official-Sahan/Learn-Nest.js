@@ -1,0 +1,165 @@
+# specify the version of docker-compose
+# version: '3.8'
+
+# define the services/containers to be run
+services:
+  # # define the frontend service
+  # # we can use any name for the service. A standard naming convention is to use "web" for the frontend
+  # web:
+  #   # we use depends_on to specify that service depends on another service
+  #   # in this case, we specify that the web depends on the api service
+  #   # this means that the api service will be started before the web service
+  #   depends_on:
+  #     - api
+  #   # specify the build context for the web service
+  #   # this is the directory where the Dockerfile for the web service is located
+  #   build: ./frontend
+  #   # specify the ports to expose for the web service
+  #   # the first number is the port on the host machine
+  #   # the second number is the port inside the container
+  #   ports:
+  #     - 3000:3000
+  #   # specify the environment variables for the web service
+  #   # these environment variables will be available inside the container
+  #   environment:
+  #     NODE_ENV: production
+  #     NEXT_API_URL: http://localhost:3000
+
+  #   # this is for docker compose watch mode
+  #   # anything mentioned under develop will be watched for changes by docker compose watch and it will perform the action mentioned
+  #   develop:
+  #     # we specify the files to watch for changes
+  #     watch:
+  #       # it'll watch for changes in package.json and package-lock.json and rebuild the container if there are any changes
+  #       - path: ./frontend/package.json
+  #         action: rebuild
+  #       - path: ./frontend/package-lock.json
+  #         action: rebuild
+  #       # it'll watch for changes in the frontend directory and sync the changes with the container real time
+  #       - path: ./frontend
+  #         target: /app
+  #         action: sync
+
+  # # define the api service/container
+  # api:
+  #   # api service depends on the db service so the db service will be started before the api service
+  #   depends_on:
+  #     - db
+
+  #   # specify the build context for the api service
+  #   build: ./
+
+  #   # specify the ports to expose for the api service
+  #   # the first number is the port on the host machine
+  #   # the second number is the port inside the container
+  #   ports:
+  #     - 3001:3001
+
+  #   # specify environment variables for the api service
+  #   environment:
+  #     DB_URL: 'mysql://sahan:Sahan@123@localhost:3306/prisma_demo'
+
+  #   # establish docker compose watch mode for the api service
+  #   develop:
+  #     # specify the files to watch for changes
+  #     watch:
+  #       # it'll watch for changes in package.json and package-lock.json and rebuild the container and image if there are any changes
+  #       - path: ./package.json
+  #         action: rebuild
+  #       - path: ./pnpm-lock.yaml
+  #         action: rebuild
+
+  #       # it'll watch for changes in the backend directory and sync the changes with the container real time
+  #       - path: ./
+  #         target: /app
+  #         action: sync
+
+  # define the db service
+  db:
+    # specify the image to use for the db service from docker hub. If we have a custom image, we can specify that in this format
+    # In the above two services, we're using the build context to build the image for the service from the Dockerfile so we specify the image as "build: ./frontend" or "build: ./backend".
+    # but for the db service, we're using the image from docker hub so we specify the image as "image: mongo:latest"
+    # you can find the image name and tag for mongodb from docker hub here: https://hub.docker.com/_/mongo
+    image: mysql:latest
+
+    # specify the ports to expose for the db service
+    # generally, we do this in api service using mongodb atlas. But for demo purposes, we're using a local mongodb instance
+    # usually, mongodb runs on port 27017. So we're exposing the port 27017 on the host machine and mapping it to the port 27017 inside the container
+    # exposed port : port inside docker
+    ports:
+      - 3002:3306
+
+    environment:
+      # MYSQL_HOST:
+      MYSQL_ROOT_PASSWORD: LeaveMe@666
+      MYSQL_USER: sahan
+      MYSQL_PASSWORD: Sahan123
+      MYSQL_DATABASE: prisma_demo
+
+    # specify the volumes to mount for the db service
+    # we're mounting the volume named "anime" inside the container at /data/db directory
+    # this is done so that the data inside the mongodb container is persisted even if the container is stopped
+    volumes:
+      - nest_demo:/data/db
+
+    networks:
+      - evision
+
+networks:
+  evision:
+
+# define the volumes to be used by the services
+volumes:
+  nest_demo:
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+
+# services:
+#   server:
+#     build:
+#       context: .
+#     environment:
+#       NODE_ENV: production
+#     ports:
+#       - 3001:3001
+
+# The commented out section below is an example of how to define a PostgreSQL
+# database that your application can use. `depends_on` tells Docker Compose to
+# start the database before your application. The `db-data` volume persists the
+# database data between container restarts. The `db-password` secret is used
+# to set the database password. You must create `db/password.txt` and add
+# a password of your choosing to it before running `docker-compose up`.
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#   db:
+#     image: postgres
+#     restart: always
+#     user: postgres
+#     secrets:
+#       - db-password
+#     volumes:
+#       - db-data:/var/lib/postgresql/data
+#     environment:
+#       - POSTGRES_DB=example
+#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+#     expose:
+#       - 5432
+#     healthcheck:
+#       test: [ "CMD", "pg_isready" ]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+# volumes:
+#   db-data:
+# secrets:
+#   db-password:
+#     file: db/password.txt
+

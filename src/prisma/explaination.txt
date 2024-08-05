@@ -1,0 +1,21 @@
+So far we have created the Prisma kind of migrations folder and we have created the prisma schema, 
+but we don't have any way from our code to actually connect to a database 
+and for that we're going to create a module to do it easily, right? 
+We're going to encapsulate all our logic regarding the database in the module and only export from the module. 
+The stuff that we need to be accessed by the application. 
+
+
+Let's go ahead and create a module. I'm going to generate. I'm going to use the Nest CLI because I'll be quite lazy here. The module Prisma and I'll just call it the same name as as this folder, but it's of course 2 different things here. This prisoner folder in the root stores the schema and migrations. While this one will be our module following the nestjs module structure, right? 
+So we will create nest g module prisma. And now it's here. And we will also create the service. We have created the service manually here. Let's go ahead and create the service with the CLI. So instead of module we have the Prisma. Sorry we have service. And by default it is going to create the spec file so the test files we don't want that here. So we say --no-spec. and now we have the service that is important as provider in the model and 
+
+
+In the service we are going to create our logic that connects to the database. 
+So the way I like to do it is that I like to have the prisoner service extending the prisma client. 
+and Prisma client is a class that allows to connect basically to a database, right? It has a constructor. 
+The structure has connect disconnect and execute SQL and everything. So what I'm what I want to do is I want to configure. 
+
+
+I want to instantiate it with this configuration. So I need to construct her and I need to call super. 
+So super will call the constructor of the class I'm extending, and the constructor of prisma client needs to have datasources needs to have DB and URL and the URL will point to that drink in a moment we are going to see how to use config variables. So dot N and everything in net she is but for now let's just put that hard coated into our prisma service right. and I think that from now we are going to need a bit of more real estate to run our scripts. So instead of running every time the terminal here I'm going to kill it actually prisma studio as well and I'm going to run my scripts in a dedicated terminal. Let me make it a bit bigger So I'm going to do yarn start. and I'm going to split it.
+and do yarn and PX and this is I term two of course is nice terminal I use on Mac so if you have any questions regarding the terminal that's the that's the one. Let's go back to our code.
+
